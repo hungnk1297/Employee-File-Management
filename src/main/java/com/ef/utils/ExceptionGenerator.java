@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 import static com.ef.constant.CommonConstant.ApiErrorStringConstant.*;
 import static com.ef.constant.CommonConstant.EntityNameConstant.FILE;
+import static com.ef.constant.CommonConstant.FieldNameConstant.FILE_ID;
 import static com.ef.constant.CommonConstant.FieldNameConstant.USERNAME;
 
 public class ExceptionGenerator {
@@ -56,6 +57,17 @@ public class ExceptionGenerator {
                 .statusMessage(FILE_UPLOAD_FAILED)
                 .timestamp(LocalDateTime.now())
                 .entityName(FILE)
+                .build();
+    }
+
+    public static ApiError noReadPermission(Long fileID) {
+        return ApiError.builder()
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .statusMessage(NO_READ_PERMISSION)
+                .timestamp(LocalDateTime.now())
+                .entityName(FILE)
+                .fieldName(FILE_ID)
+                .fieldValue(fileID)
                 .build();
     }
 }

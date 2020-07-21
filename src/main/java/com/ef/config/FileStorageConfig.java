@@ -24,6 +24,7 @@ import java.nio.file.Paths;
 public class FileStorageConfig {
 
     private String uploadDirectory;
+    private String tempDirectory;
 
     public static Path getPathByDirectory(String directory) {
         Path storeLocation = Paths.get(directory);
@@ -40,6 +41,11 @@ public class FileStorageConfig {
     @Bean(name = "uploadPath")
     Path getUploadPath() {
         return getPathByDirectory(this.uploadDirectory);
+    }
+
+    @Bean(name = "tempPath")
+    Path getTempPath() {
+        return getPathByDirectory(this.tempDirectory);
     }
 
 }

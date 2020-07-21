@@ -33,3 +33,4 @@ logging:
 
 file:
   upload-directory: employee-files
+  temp-directory: temp-files

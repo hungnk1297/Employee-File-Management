@@ -3,14 +3,22 @@ package com.ef.utils;
 import com.ef.constant.CommonConstant;
 import com.ef.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import static com.ef.constant.CommonConstant.EntityNameConstant.*;
+import static com.ef.constant.CommonConstant.FieldNameConstant.*;
 
 @Slf4j
 @Component
@@ -70,6 +78,61 @@ public class FileUtil {
             if (!success)
                 log.error("Error when creating employee directory file for employee {}", employeeID);
         }
+    }
+
+    public static boolean deleteFileByUrl(String url) {
+        try {
+            if (Paths.get(url).toFile().exists()) {
+                Files.deleteIfExists(Paths.get(url));
+                log.info("File deleted successfully! ({})", url);
+                return true;
+            } else {
+                log.error("The file is not exist to be deleted! {}", url);
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("Error when deleting file in directory {}", url);
+            return false;
+        }
+    }
+
+    public static Resource download(Path filePath) throws IOException {
+        if (Files.notExists(filePath)) {
+            throw new CustomException(ExceptionGenerator.notFound(FILE, URL, filePath.toString()));
+        }
+        return new UrlResource(filePath.toUri());
+    }
+
+    public static String zipFiles(Path directory, String zippedFileName, List<File> fileToZip) {
+        String zipPath = directory.toAbsolutePath().toString() +
+                File.separator + zippedFileName + CommonConstant.FileConstant.ZIP_EXTENSION;
+
+        if (Paths.get(zipPath).toFile().exists())
+            Paths.get(zipPath).toFile().delete();
+
+        try (FileOutputStream fos = new FileOutputStream(zipPath);
+             ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(fos))) {
+            zos.setLevel(9);
+
+            for (File file : fileToZip) {
+                try (FileInputStream fis = new FileInputStream(file)) {
+                    ZipEntry entry = new ZipEntry(file.getName());
+                    zos.putNextEntry(entry);
+                    for (int c = fis.read(); c != -1; c = fis.read()) {
+                        zos.write(c);
+                    }
+                    zos.flush();
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error when creating zip file!");
+        }
+
+        File zippedFile = new File(zipPath);
+        if (!zippedFile.exists()) {
+            log.error("The created zip file could not be found!");
+        }
+        return zippedFile.getAbsolutePath();
     }
 
 }
