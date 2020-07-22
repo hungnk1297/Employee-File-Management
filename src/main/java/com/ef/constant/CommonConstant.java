@@ -13,6 +13,7 @@ public class CommonConstant {
         public static final String UNAUTHORIZED = "The Employee Token is Unauthorized!";
         public static final String FILE_UPLOAD_FAILED = "Failed when uploading file!";
         public static final String NO_READ_PERMISSION = "You have no read permission for the file!";
+        public static final String NOT_OWNER_OF_THE_FILE = "You are not the owner of the file!";
     }
 
     public static class FieldNameConstant{

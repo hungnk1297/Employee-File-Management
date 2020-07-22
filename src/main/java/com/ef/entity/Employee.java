@@ -32,6 +32,6 @@ public class Employee extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<EmployeeFile> files;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sharingEmployee", cascade = CascadeType.ALL)
     private Set<FileSharing> fileSharings;
 }

@@ -21,4 +21,6 @@ public interface FileService {
     Resource zipAndDownloadFiles(Long employeeID, Set<Long> fileIds) throws IOException;
 
     List<FileResponseDTO> getAllFilesOfEmployee(Long employeeID);
+
+    List<FileResponseDTO> deleteAllFileOfEmployee(Long employeeID);
 }

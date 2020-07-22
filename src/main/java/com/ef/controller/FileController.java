@@ -1,6 +1,5 @@
 package com.ef.controller;
 
-import com.ef.constant.CommonConstant;
 import com.ef.exception.CustomException;
 import com.ef.model.response.FileResponseDTO;
 import com.ef.service.FileService;
@@ -69,18 +68,20 @@ public class FileController {
 
     @GetMapping(path = "/download")
     public ResponseEntity<Resource> downloadFile(
+            @RequestHeader(name = "token") String token,
             @PathVariable(value = "employeeID") Long employeeID,
             @RequestParam(value = "fileID") Long fileID,
             HttpServletRequest request) throws IOException {
-        if (validator.authorizedReadPermission(employeeID, fileID)) {
+        if (validator.authorizedEmployeeToken(token, employeeID)
+                && validator.authorizedReadPermission(employeeID, fileID)) {
             Resource resource = fileService.downloadFileByFileID(fileID);
             String contentType = null;
             try {
                 contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
             } catch (Exception e) {
                 log.error("Could not get the content type!");
-                contentType = DEFAULT_CONTENT_TYPE;
             }
+            contentType = contentType != null ? contentType : DEFAULT_CONTENT_TYPE;
 
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
@@ -93,30 +94,33 @@ public class FileController {
 
     @GetMapping(path = "/zip-and-download")
     public ResponseEntity<Resource> zipAndDownloadMultipleFiles(
+            @RequestHeader(name = "token") String token,
             @PathVariable(value = "employeeID") Long employeeID,
             @RequestBody Set<Long> fileIDs,
             HttpServletRequest request) throws IOException {
 
-        for (Long fileID : fileIDs) {
-            if (!validator.authorizedReadPermission(employeeID, fileID))
-                throw new CustomException(ExceptionGenerator.noReadPermission(fileID));
+        if (validator.authorizedEmployeeToken(token, employeeID)) {
+            for (Long fileID : fileIDs) {
+                if (!validator.authorizedReadPermission(employeeID, fileID))
+                    throw new CustomException(ExceptionGenerator.noReadPermission(fileID));
+            }
+
+            Resource resource = fileService.zipAndDownloadFiles(employeeID, fileIDs);
+            String contentType = null;
+            try {
+                contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+            } catch (Exception e) {
+                log.error("Could not get the content type!");
+                contentType = DEFAULT_CONTENT_TYPE;
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT_FILENAME + resource.getFilename() + KEY_SLASH)
+                    .body(resource);
+
         }
-
-
-        Resource resource = fileService.zipAndDownloadFiles(employeeID, fileIDs);
-        String contentType = null;
-        try {
-            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (Exception e) {
-            log.error("Could not get the content type!");
-            contentType = DEFAULT_CONTENT_TYPE;
-        }
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, ATTACHMENT_FILENAME + resource.getFilename() + KEY_SLASH)
-                .body(resource);
-
+        return ResponseEntity.badRequest().build();
     }
 
 }

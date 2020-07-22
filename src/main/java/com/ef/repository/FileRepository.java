@@ -13,4 +13,6 @@ public interface FileRepository extends JpaRepository<EmployeeFile, Long> {
     List<EmployeeFile> findAllByFileIDInAndDeletedIsFalse(Set<Long> fileIDs);
 
     EmployeeFile getByFileIDAndDeletedIsFalse(Long fileID);
+
+    List<EmployeeFile> findAllByEmployee_EmployeeIDAndDeletedIsFalse(Long employeeID);
 }

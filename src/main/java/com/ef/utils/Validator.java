@@ -109,5 +109,20 @@ public class Validator {
         return fileSharingRepository.isSharingToEmployee(employeeID, fileID);
     }
 
-    //TODO
+    //  Share file permission check
+    public boolean isOwnerOfFile(Long employeeID, Long fileID) {
+        Employee employee = employeeRepository.getByEmployeeIDAndDeletedIsFalse(employeeID);
+        if (employee == null)
+            throw new CustomException(ExceptionGenerator.notFound(EMPLOYEE, EMPLOYEE_ID, employeeID));
+
+        EmployeeFile file = fileRepository.getByFileIDAndDeletedIsFalse(fileID);
+        if (file == null)
+            throw new CustomException(ExceptionGenerator.notFound(FILE, FILE_ID, fileID));
+
+        if (employeeID.equals(file.getEmployee().getEmployeeID()))
+            return true;
+
+        throw new CustomException(ExceptionGenerator.notOwnerOfTheFile());
+    }
+
 }

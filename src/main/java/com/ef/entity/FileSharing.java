@@ -20,7 +20,7 @@ public class FileSharing extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "SHARING_EMPLOYEE_ID", nullable = false)
-    private Employee employee;
+    private Employee sharingEmployee;
 
     @ManyToOne
     @JoinColumn(name = "FILE_ID", nullable = false)

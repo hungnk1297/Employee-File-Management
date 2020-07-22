@@ -3,22 +3,23 @@ package com.ef.model.response;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FileResponseDTO extends BaseResponseDTO{
+public class FileSharingResponseDTO extends BaseResponseDTO {
 
-    private Long fileID;
+    private Long fileSharingID;
+
     private Long employeeID;
 
-    private String fileName;
-    private String url;
+    private Long fileID;
+
+    private Long sharingEmployeeID;
 
     private LocalDateTime createdOn;
 
-    private Set<Long> sharedEmployeeID;
+    private boolean deleted;
 }

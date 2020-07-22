@@ -7,6 +7,8 @@ import com.ef.model.request.EmployeeCreateRequestDTO;
 import com.ef.model.response.EmployeeResponseDTO;
 import com.ef.repository.EmployeeRepository;
 import com.ef.service.EmployeeService;
+import com.ef.service.FileService;
+import com.ef.service.FileSharingService;
 import com.ef.utils.ExceptionGenerator;
 import com.ef.utils.Validator;
 import lombok.AllArgsConstructor;
@@ -27,6 +29,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final Validator validator;
+
+    private final FileService fileService;
+    private final FileSharingService fileSharingService;
 
     @Transactional
     @Override
@@ -65,6 +70,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employee == null)
             throw new CustomException(ExceptionGenerator.notFound(EMPLOYEE, EMPLOYEE_ID, employeeID));
 
+        fileSharingService.stopSharingFileWhenDeleteEmployee(employeeID);
+        fileService.deleteAllFileOfEmployee(employeeID);
         employee.setDeleted(true);
         employeeRepository.save(employee);
         return String.format("User %s was successfully deleted.", employee.getUsername());

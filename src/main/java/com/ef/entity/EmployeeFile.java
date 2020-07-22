@@ -29,6 +29,6 @@ public class EmployeeFile extends BaseEntity {
     @JoinColumn(name = "EMPLOYEE_ID", nullable = false)
     private Employee employee;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sharingEmployee", cascade = CascadeType.ALL)
     private Set<FileSharing> fileSharings;
 }

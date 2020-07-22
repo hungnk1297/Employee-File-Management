@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static com.ef.constant.CommonConstant.EntityNameConstant.*;
-import static com.ef.constant.CommonConstant.FieldNameConstant.*;
+import static com.ef.constant.CommonConstant.EntityNameConstant.FILE;
+import static com.ef.constant.CommonConstant.FieldNameConstant.URL;
 
 @Slf4j
 @Component

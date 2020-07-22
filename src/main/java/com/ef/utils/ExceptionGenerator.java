@@ -70,4 +70,12 @@ public class ExceptionGenerator {
                 .fieldValue(fileID)
                 .build();
     }
+
+    public static ApiError notOwnerOfTheFile() {
+        return ApiError.builder()
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .statusMessage(NOT_OWNER_OF_THE_FILE)
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
 }

@@ -9,6 +9,7 @@ import com.ef.model.response.FileResponseDTO;
 import com.ef.repository.EmployeeRepository;
 import com.ef.repository.FileRepository;
 import com.ef.service.FileService;
+import com.ef.service.FileSharingService;
 import com.ef.utils.ExceptionGenerator;
 import com.ef.utils.FileUtil;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,12 +42,15 @@ public class FileServiceImpl implements FileService {
     private final EmployeeRepository employeeRepository;
     private final FileRepository fileRepository;
 
+    private final FileSharingService fileSharingService;
+
     @Qualifier("uploadPath")
     private final Path uploadPath;
 
     @Qualifier("tempPath")
     private final Path tempPath;
 
+    @Transactional
     @Override
     public List<FileResponseDTO> uploadFile(Long employeeID, MultipartFile[] files) {
         Employee employee = getEmployee(employeeID);
@@ -70,13 +75,17 @@ public class FileServiceImpl implements FileService {
         return employeeFileList.stream().map(this::toFileResponseDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public List<FileResponseDTO> deleteFileInDB(Long employeeID, Set<Long> fileIDs) {
         getEmployee(employeeID);
 
         List<EmployeeFile> files = fileRepository.findAllByFileIDInAndDeletedIsFalse(fileIDs);
 
-        files.forEach(employeeFile -> employeeFile.setDeleted(true));
+        files.forEach(employeeFile -> {
+            fileSharingService.stopSharingFile(employeeFile.getFileID(), new HashSet<>());
+            employeeFile.setDeleted(true);
+        });
         files = fileRepository.saveAll(files);
         return files.stream().map(this::toFileResponseDTO).collect(Collectors.toList());
     }
@@ -134,6 +143,20 @@ public class FileServiceImpl implements FileService {
         return files.stream().map(this::toFileResponseDTO).collect(Collectors.toList());
     }
 
+    @Transactional
+    @Override
+    public List<FileResponseDTO> deleteAllFileOfEmployee(Long employeeID) {
+        getEmployee(employeeID);
+
+        List<EmployeeFile> employeeFileList = fileRepository.findAllByEmployee_EmployeeIDAndDeletedIsFalse(employeeID);
+
+        employeeFileList.forEach(employeeFile -> employeeFile.setDeleted(true));
+        employeeFileList = fileRepository.saveAll(employeeFileList);
+
+        List<FileResponseDTO> fileResponseDTOList = employeeFileList.stream().map(this::toFileResponseDTO).collect(Collectors.toList());
+        return deleteFileInDirectory(fileResponseDTOList);
+    }
+
     /*  ADD-ONs */
 
     private Employee getEmployee(Long employeeID) {
@@ -151,15 +174,15 @@ public class FileServiceImpl implements FileService {
         sharings.removeIf(BaseEntity::isDeleted);
 
         Set<Long> sharingEmployeeIDs = sharings.stream()
-                .map(fileSharing -> fileSharing.getEmployee().getEmployeeID()).collect(Collectors.toSet());
+                .map(fileSharing -> fileSharing.getSharingEmployee().getEmployeeID()).collect(Collectors.toSet());
 
         return FileResponseDTO.builder()
                 .employeeID(file.getEmployee().getEmployeeID())
                 .fileID(file.getFileID())
                 .fileName(file.getFileName())
                 .url(file.getUrl())
-                .createdOn(file.getCreatedOn())
                 .sharedEmployeeID(sharingEmployeeIDs)
+                .createdOn(file.getCreatedOn())
                 .build();
     }
 }
