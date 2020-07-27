@@ -4,10 +4,10 @@ Create a file sharing system back-end using Spring boot and Oracle.
 The project was built using Spring Boot with Oracle as Database.
 
 1. Database
-    - I use the default local database. To generate the tables in order to test the API, run the employee_file_ass1.sql script file and change the
+    - I use the default local database. To generate the tables in order to test the API, run the <b>employee_file_ass1.sql</b> script file and change the
     application.yml file config to point to your local database.
     
-    - To review the Tables and theirs relations, head for the AS1_ERD.png file.
+    - To review the Tables and theirs relations, head for the <b>AS1_ERD.png</b> file.
     
 2. Start the server
     - Make sure you have maven installed, otherwise research how to install and use it on the internet.
