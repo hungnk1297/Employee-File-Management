@@ -78,6 +78,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     }
 
+    @Override
+    public boolean validateLogin(EmployeeCreateRequestDTO requestDTO) {
+        Employee employee = employeeRepository.getByUsernameAndDeletedIsFalse(requestDTO.getUsername());
+        if (employee == null)
+            throw new CustomException(ExceptionGenerator.invalidLogin());
+
+        if (!employee.getPassword().equals(validator.generateHashPassword(requestDTO.getUsername(), requestDTO.getPassword())))
+            throw new CustomException(ExceptionGenerator.invalidLogin());
+
+        return true;
+    }
+
     private EmployeeResponseDTO toEmployeeResponseDTO(Employee employee) {
         EmployeeResponseDTO responseDTO = EmployeeResponseDTO.builder()
                 .employeeID(employee.getEmployeeID())

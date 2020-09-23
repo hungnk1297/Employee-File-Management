@@ -1,5 +1,6 @@
 package com.ef.utils;
 
+import com.ef.constant.CommonConstant;
 import com.ef.entity.Employee;
 import com.ef.entity.EmployeeFile;
 import com.ef.exception.CustomException;
@@ -10,7 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -123,6 +127,16 @@ public class Validator {
             return true;
 
         throw new CustomException(ExceptionGenerator.notOwnerOfTheFile());
+    }
+
+    public boolean isLoggedIn(){
+        HttpSession session = Validator.getSession();
+        return session.getAttribute(CommonConstant.AttributeConstant.USER_LOGGED_IN) != null;
+    }
+
+    public static HttpSession getSession() {
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        return attr.getRequest().getSession(true); // true == allow create
     }
 
 }

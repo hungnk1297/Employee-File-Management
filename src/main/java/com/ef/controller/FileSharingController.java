@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@RestController
+//@RestController
 @Slf4j
 @RequestMapping(path = "/employee/{employeeID}/share-file")
 @AllArgsConstructor

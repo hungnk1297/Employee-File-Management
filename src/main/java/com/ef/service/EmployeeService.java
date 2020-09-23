@@ -10,4 +10,6 @@ public interface EmployeeService {
     EmployeeResponseDTO getEmployeeToken(EmployeeCreateRequestDTO requestDTO);
 
     String deleteEmployee(Long employeeID);
+
+    boolean validateLogin(EmployeeCreateRequestDTO requestDTO);
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@RestController
+//@RestController
 @Slf4j
 @RequestMapping(path = "/employee")
 @AllArgsConstructor

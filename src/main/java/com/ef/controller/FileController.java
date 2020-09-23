@@ -22,7 +22,7 @@ import java.util.Set;
 
 import static com.ef.constant.CommonConstant.FileConstant.*;
 
-@RestController
+//@RestController
 @Slf4j
 @RequestMapping(path = "/employee/{employeeID}/file")
 @AllArgsConstructor
