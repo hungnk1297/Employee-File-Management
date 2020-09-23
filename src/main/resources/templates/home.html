@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+
+<body class="container">
+<h1>Home Page</h1><br>
+
+<div class="container">
+    <h3>
+        Welcome, <i th:text="${session.employeeLoggedIn}"></i>
+        <a class="navbar-brand" href="#" th:href="@{/employee/logout}">Log out</a>
+    </h3>
+
+    <h4 style="color: red" th:if="model.error_UploadFile == false"> Upload file error!</h4>
+
+    <!--    Upload File-->
+    <div>
+        <span>Upload new file</span>
+        <form th:action="@{|/employee/${session.employeeID}/file|}" method="POST"
+              enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" name="files" class="form-control-file">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload File</button>
+        </form>
+    </div>
+    <!--    Upload File-->
+
+
+    <!--    List file-->
+    <table border="2px solid gray" style="margin: 3px; padding: 3px">
+        <thead style="text-align: center">
+        <td>File name</td>
+        <td>Created Date</td>
+        <td>Last Modified Date</td>
+        <td>Sharing Employee(s)</td>
+        </thead>
+
+        <tbody>
+        <th:block th:each="file : ${authorizedFiles}">
+            <tr>
+                <td style="margin: 10px">
+                    <a th:href="@{|/employee/${session.employeeID}/file/download?fileID=${file.fileID}|}"
+                       th:text="${file.getFileName()}"
+                       th:target="_blank"></a></td>
+                <td style="margin: 10px" th:text="${file.getCreatedOn()}"></td>
+                <td style="margin: 10px" th:text="${file.getLastModified()}"></td>
+                <td style="margin: 10px" th:text="${file.getSharedEmployeeNameStr()}"></td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+    <!--    List file-->
+
+
+</div>
+</body>
+</html>

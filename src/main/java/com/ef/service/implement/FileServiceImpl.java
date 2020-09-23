@@ -176,6 +176,9 @@ public class FileServiceImpl implements FileService {
         Set<Long> sharingEmployeeIDs = sharings.stream()
                 .map(fileSharing -> fileSharing.getSharingEmployee().getEmployeeID()).collect(Collectors.toSet());
 
+        String sharedEmployeeNameStr = sharings.stream()
+                .map(fileSharing -> fileSharing.getSharingEmployee().getUsername()).collect(Collectors.joining("; "));
+
         return FileResponseDTO.builder()
                 .employeeID(file.getEmployee().getEmployeeID())
                 .fileID(file.getFileID())
@@ -183,6 +186,7 @@ public class FileServiceImpl implements FileService {
                 .url(file.getUrl())
                 .sharedEmployeeID(sharingEmployeeIDs)
                 .createdOn(file.getCreatedOn())
+                .sharedEmployeeNameStr(sharedEmployeeNameStr)
                 .build();
     }
 }

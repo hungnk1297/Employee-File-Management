@@ -16,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.Base64;
 
+import static com.ef.constant.CommonConstant.AttributeConstant.ALL_ATTRIBUTES;
 import static com.ef.constant.CommonConstant.EntityNameConstant.EMPLOYEE;
 import static com.ef.constant.CommonConstant.FieldNameConstant.EMPLOYEE_ID;
 import static com.ef.constant.CommonConstant.TOKEN_SIGNATURE;
@@ -79,7 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public boolean validateLogin(EmployeeCreateRequestDTO requestDTO) {
+    public EmployeeResponseDTO validateLogin(EmployeeCreateRequestDTO requestDTO) {
         Employee employee = employeeRepository.getByUsernameAndDeletedIsFalse(requestDTO.getUsername());
         if (employee == null)
             throw new CustomException(ExceptionGenerator.invalidLogin());
@@ -87,7 +89,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (!employee.getPassword().equals(validator.generateHashPassword(requestDTO.getUsername(), requestDTO.getPassword())))
             throw new CustomException(ExceptionGenerator.invalidLogin());
 
-        return true;
+        return toEmployeeResponseDTO(employee);
+    }
+
+    @Override
+    public void clearSession() {
+        HttpSession session = Validator.getSession();
+        for (String att : ALL_ATTRIBUTES) {
+            session.removeAttribute(att);
+        }
     }
 
     private EmployeeResponseDTO toEmployeeResponseDTO(Employee employee) {

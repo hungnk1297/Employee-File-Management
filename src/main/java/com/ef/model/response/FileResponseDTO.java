@@ -21,4 +21,6 @@ public class FileResponseDTO extends BaseResponseDTO{
     private LocalDateTime createdOn;
 
     private Set<Long> sharedEmployeeID;
+
+    private String sharedEmployeeNameStr;
 }

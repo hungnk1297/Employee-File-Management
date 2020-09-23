@@ -3,6 +3,9 @@ package com.ef.constant;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
+import java.util.List;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommonConstant {
 
@@ -10,7 +13,7 @@ public class CommonConstant {
     public static final String EMPTY_STRING = "";
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ApiErrorStringConstant{
+    public static class ApiErrorStringConstant {
         public static final String DUPLICATED_USERNAME = "The username is existed!";
         public static final String ENTITY_NOT_FOUND = "The Entity is NOT found!";
         public static final String USERNAME_OR_PASSWORD_INCORRECT = "Username or Password is incorrect!";
@@ -21,7 +24,7 @@ public class CommonConstant {
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class FieldNameConstant{
+    public static class FieldNameConstant {
         public static final String USERNAME = "username";
         public static final String EMPLOYEE_ID = "employeeID";
         public static final String FILE_ID = "fileID";
@@ -29,14 +32,14 @@ public class CommonConstant {
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class EntityNameConstant{
+    public static class EntityNameConstant {
         public static final String EMPLOYEE = "Employee";
         public static final String FILE = "File";
         public static final String FILE_SHARING = "File_Sharing";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class FileConstant{
+    public static class FileConstant {
         public static final String ZIP_EXTENSION = ".zip";
         public static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
         public static final String ATTACHMENT_FILENAME = "attachment; filename=\"";
@@ -46,12 +49,21 @@ public class CommonConstant {
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class AttributeConstant{
-        public static final String USER_LOGGED_IN = "userLoggedIn";
+    public static class AttributeConstant {
+        public static final String EMPLOYEE_LOGGED_IN = "employeeLoggedIn";
+        public static final String EMPLOYEE_ID = "employeeID";
+        public static final String AUTHORIZED_FILES = "authorizedFiles";
+        public static final String SUCCESS_REGISTER_EMPLOYEE = "success_registerEmployee";
+        public static final String ERROR_UPLOAD_FILE = "error_UploadFile";
+
+        public static final List<String> ALL_ATTRIBUTES = Arrays.asList(
+                EMPLOYEE_LOGGED_IN,
+                EMPLOYEE_ID
+        );
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class TemplateConstant{
+    public static class TemplateConstant {
         public static final String REDIRECT = "redirect:/";
         public static final String INDEX = "index";
         public static final String HOME = "home";

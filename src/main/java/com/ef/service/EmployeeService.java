@@ -11,5 +11,7 @@ public interface EmployeeService {
 
     String deleteEmployee(Long employeeID);
 
-    boolean validateLogin(EmployeeCreateRequestDTO requestDTO);
+    EmployeeResponseDTO validateLogin(EmployeeCreateRequestDTO requestDTO);
+
+    void clearSession();
 }

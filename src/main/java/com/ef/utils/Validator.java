@@ -131,7 +131,7 @@ public class Validator {
 
     public boolean isLoggedIn(){
         HttpSession session = Validator.getSession();
-        return session.getAttribute(CommonConstant.AttributeConstant.USER_LOGGED_IN) != null;
+        return session.getAttribute(CommonConstant.AttributeConstant.EMPLOYEE_LOGGED_IN) != null;
     }
 
     public static HttpSession getSession() {
