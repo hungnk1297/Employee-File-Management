@@ -8,7 +8,9 @@ import com.finall.repository.EmployeeRepository;
 import com.finall.repository.FileRepository;
 import com.finall.repository.FileSharingRepository;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -25,14 +27,16 @@ import static com.finall.constant.CommonConstant.EntityNameConstant.FILE;
 import static com.finall.constant.CommonConstant.FieldNameConstant.*;
 import static com.finall.constant.CommonConstant.TOKEN_SIGNATURE;
 
-@AllArgsConstructor
+
 @Slf4j
 @Component
+@AllArgsConstructor(onConstructor_ = {@Autowired})
+@NoArgsConstructor
 public class Validator {
 
-    private final EmployeeRepository employeeRepository;
-    private final FileRepository fileRepository;
-    private final FileSharingRepository fileSharingRepository;
+    private EmployeeRepository employeeRepository;
+    private FileRepository fileRepository;
+    private FileSharingRepository fileSharingRepository;
 
     //  Validate duplicate username when creating
     public boolean isDuplicateUsername(String username) {
@@ -40,7 +44,7 @@ public class Validator {
     }
 
     //  Generate hash password
-    public String generateHashPassword(String username, String password) {
+    public static String generateHashPassword(String username, String password) {
         String appendedString = password.concat(username);
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
@@ -129,7 +133,7 @@ public class Validator {
         throw new CustomException(ExceptionGenerator.notOwnerOfTheFile());
     }
 
-    public boolean isLoggedIn(){
+    public boolean isLoggedIn() {
         HttpSession session = Validator.getSession();
         return session.getAttribute(CommonConstant.AttributeConstant.EMPLOYEE_LOGGED_IN) != null;
     }

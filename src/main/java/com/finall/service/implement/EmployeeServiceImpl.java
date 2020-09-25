@@ -12,7 +12,9 @@ import com.finall.service.FileSharingService;
 import com.finall.utils.ExceptionGenerator;
 import com.finall.utils.Validator;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,23 +26,23 @@ import static com.finall.constant.CommonConstant.EntityNameConstant.EMPLOYEE;
 import static com.finall.constant.CommonConstant.FieldNameConstant.EMPLOYEE_ID;
 import static com.finall.constant.CommonConstant.TOKEN_SIGNATURE;
 
-@AllArgsConstructor
 @Service
 @Slf4j
+@AllArgsConstructor(onConstructor_ = {@Autowired})
+@NoArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private final EmployeeRepository employeeRepository;
-    private final Validator validator;
-
-    private final FileService fileService;
-    private final FileSharingService fileSharingService;
+    private EmployeeRepository employeeRepository;
+    private Validator validator;
+    private FileService fileService;
+    private FileSharingService fileSharingService;
 
     @Transactional
     @Override
     public EmployeeResponseDTO createEmployee(EmployeeCreateRequestDTO createRequestDTO) {
 
-        if (validator.isDuplicateUsername(createRequestDTO.getUsername()))
-            throw new CustomException(ExceptionGenerator.duplicateUsername(createRequestDTO.getUsername()));
+//        if (employeeRepository.isDuplicateUsername(createRequestDTO.getUsername()))
+//            throw new CustomException(ExceptionGenerator.duplicateUsername(createRequestDTO.getUsername()));
 
         Employee employee = Employee.builder()
                 .username(createRequestDTO.getUsername())
