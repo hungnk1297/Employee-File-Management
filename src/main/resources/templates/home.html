@@ -30,33 +30,51 @@
         </form>
     </div>
     <!--    Upload File-->
+    <br><br>
 
-
+    <h4 style="color: green">Your Files</h4>
     <!--    List file-->
     <table border="2px solid gray" style="margin: 3px; padding: 3px">
         <thead style="text-align: center">
         <td>File name</td>
+        <td>File size</td>
         <td>Created Date</td>
-        <td>Last Modified Date</td>
-        <td>Sharing Employee(s)</td>
+        <td>Downloadable link</td>
+        <td></td>
         </thead>
 
         <tbody>
         <th:block th:each="file : ${authorizedFiles}">
             <tr>
-                <td style="margin: 10px">
-                    <a th:href="@{|/employee/${session.employeeID}/file/download?fileID=${file.fileID}|}"
-                       th:text="${file.getFileName()}"
-                       th:target="_blank"></a></td>
+                <td style="margin: 10px" th:text="${file.getFileName()}"></td>
+                <td style="margin: 10px" th:text="${file.getFileSizeInMegaByte()}"></td>
                 <td style="margin: 10px" th:text="${file.getCreatedOn()}"></td>
-                <td style="margin: 10px" th:text="${file.getLastModified()}"></td>
-                <td style="margin: 10px" th:text="${file.getSharedEmployeeNameStr()}"></td>
+                <td style="margin: 10px">
+                    <a th:href="@{|/download/${file.getGeneratedLink()}|}"
+                       th:text="${file.getGeneratedLink()}"
+                       th:target="_blank"></a>
+                </td>
+                <td style="margin: 10px">
+                    <a th:href="@{|/employee/${session.employeeID}/file/generate?fileID=${file.fileID}|}">
+                        <button>Generate/Refresh</button>
+                    </a>
+                </td>
             </tr>
         </th:block>
         </tbody>
     </table>
     <!--    List file-->
 
+    <br><br>
+    <!--    Download shared file form-->
+    <form th:action="@{/download/from-form}" th:object="${formDownloadRequestDTO}" method="POST">
+        <div class="form-group">
+            <label class="control-label">Paste shared downloadable link here</label>
+            <input class="form-control" th:field="*{generatedLink}"/>
+        </div>
+        <button type="submit" class="btn btn-success">Download</button>
+    </form>
+    <!--    Download shared file form-->
 
 </div>
 </body>

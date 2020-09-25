@@ -1,0 +1,30 @@
+package com.finall.model.response;
+
+import lombok.*;
+
+import java.time.LocalDateTime;
+import java.util.Set;
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class FileResponseDTO extends BaseResponseDTO{
+
+    private Long fileID;
+    private Long employeeID;
+
+    private String fileName;
+    private String url;
+
+    private LocalDateTime createdOn;
+
+    private Set<Long> sharedEmployeeID;
+
+    private String sharedEmployeeNameStr;
+
+    private String fileSizeInMegaByte;
+
+    private String generatedLink;
+}
